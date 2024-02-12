@@ -1,7 +1,7 @@
 export const initialContent = `
-<h1 className="text-4xl font-bold  mb-8">
+<h2 className="text-2xl font-semibold mb-4">
         Unleashing the Power of Tailwind CSS: A Comprehensive Guide
-      </h1>
+      </h2>
       <p>
         Tailwind CSS stands out as a powerful tool that streamlines the process
         of building modern, responsive web interfaces. Tailwind CSS offers
