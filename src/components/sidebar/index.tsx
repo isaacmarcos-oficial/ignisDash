@@ -5,6 +5,7 @@ import {
   Download,
   Home,
   Pencil,
+  PlaySquare,
   Settings,
   ShoppingCart,
   User,
@@ -15,10 +16,11 @@ export function Sidebar() {
   const menuItems = [
     { link: "/", name: "Início", icon: <Home className="size-5"/> },
     { link: "/blog", name: "Blog", icon: <Pencil className="size-5"/> },
+    { link: "/cursos", name: "Cursos", icon: <PlaySquare className="size-5"/> },
+    { link: "/loja", name: "Loja", icon: <ShoppingCart className="size-5"/> },
     { link: "/evangelho", name: "Evangelho", icon: <Bookmark className="size-5"/> },
     { link: "/downloads", name: "Downloads", icon: <Download className="size-5"/> },
-    { link: "/loja", name: "Loja", icon: <ShoppingCart className="size-5"/> },
-    { link: "/clientes", name: "Clientes", icon: <User className="size-5"/> },
+    { link: "/users", name: "Usuários", icon: <User className="size-5"/> },
     { link: "/configuracoes", name: "Configurações", icon: <Settings className="size-5"/> },
   ];
 

@@ -41,7 +41,7 @@ export function MenuList({ menuLink, menuIcon, menuName }: MenuListProps) {
           <p
             className={`text-base ${
               isHovered ? "text-yellow-700" : "text-gray-500"
-            } hidden md:block transition duration-200`}
+            } hidden lg:block transition duration-200`}
           >
             {menuName}
           </p>

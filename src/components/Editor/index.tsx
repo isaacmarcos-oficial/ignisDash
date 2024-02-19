@@ -20,7 +20,10 @@ import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import { useEffect, useState } from "react";
 
-export function Editor({ onContentChange }) {
+type ContentChangeHandler = (content: string) => void;
+
+
+export function Editor({ onContentChange }: {onContentChange: ContentChangeHandler}) {
   const [_linkURL, setLinkURL] = useState("");
   const editor = useEditor({
     extensions: [
@@ -34,7 +37,6 @@ export function Editor({ onContentChange }) {
       editor.editor.getHTML
     },
     content: "",
-    // initialContent,
     editorProps: {
       attributes: {
         class: "outline-none",
@@ -70,7 +72,6 @@ export function Editor({ onContentChange }) {
 
     editor.on("selectionUpdate", updateLinkURL);
 
-    // Limpeza
     return () => {
       editor.off("selectionUpdate", updateLinkURL);
     };
@@ -113,7 +114,12 @@ export function Editor({ onContentChange }) {
             </div>
           </button>
 
-          <button className="flex items-center gap-2 p-1 rounded min-w-[280px] hover:bg-zinc-100">
+          <button
+            className="flex items-center gap-2 p-1 rounded min-w-[280px] hover:bg-zinc-100"
+            onClick={() =>
+              editor.chain().focus().setParagraph().run()
+            }
+          >
             <img
               src="https://www.notion.so/images/blocks/text/en-US.png"
               alt="Text"
