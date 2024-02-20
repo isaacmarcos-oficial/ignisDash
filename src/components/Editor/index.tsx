@@ -14,7 +14,6 @@ import {
   RxStrikethrough,
 } from "react-icons/rx";
 import StarterKit from "@tiptap/starter-kit";
-// import { initialContent } from "./initialContent";
 import { BubbleButton } from "./BubbleButton";
 import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
@@ -99,6 +98,7 @@ export function Editor({ onContentChange }: {onContentChange: ContentChangeHandl
         >
           <button
             className="flex items-center gap-2 p-1 rounded min-w-[280px] hover:bg-zinc-100"
+            type="button"
             onClick={() =>
               editor.chain().focus().toggleHeading({ level: 2 }).run()
             }
@@ -116,6 +116,7 @@ export function Editor({ onContentChange }: {onContentChange: ContentChangeHandl
 
           <button
             className="flex items-center gap-2 p-1 rounded min-w-[280px] hover:bg-zinc-100"
+            type="button"
             onClick={() =>
               editor.chain().focus().setParagraph().run()
             }
@@ -135,6 +136,7 @@ export function Editor({ onContentChange }: {onContentChange: ContentChangeHandl
 
           <button
             className="flex items-center gap-2 p-1 rounded min-w-[280px] hover:bg-zinc-100"
+            type="button"
             onClick={() => editor.chain().focus().toggleBlockquote().run()}
           >
             <img
