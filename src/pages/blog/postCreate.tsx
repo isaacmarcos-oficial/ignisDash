@@ -8,35 +8,13 @@ import { FileInput } from "./fileInput";
 import { useMutation } from "@apollo/client";
 import { CREATE_POST } from "@/lib/queries/queriePost";
 import { Post } from "@/types/post";
+import { toast } from "sonner";
 
 export function PostCreate() {
   const [createPost] = useMutation(CREATE_POST);
   const [coverImageUrl, setCoverImageUrl] = useState("");
   const editorContentRef = useRef("");
 
-  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const { name, value } = e.target;
-  //   setFormData((prevState) => ({
-  //     ...prevState,
-  //     [name]: value,
-  //   }));
-  // };
-
-  // const handleImageChange = (_file: File | null, url?: string) => {
-  //   if (url) {
-  //     setFormData((prevState) => ({
-  //       ...prevState,
-  //       coverImage: url
-  //     }))
-  //   }
-  // };
-
-  // const handleContentChange = (content: string) => {
-  //   setFormData((prevState) => ({
-  //     ...prevState,
-  //     content: content,
-  //   }));
-  // };
   const handleImageChange = (_file: File | null, url?: string) => {
     setCoverImageUrl(url || "");
   };
@@ -52,11 +30,11 @@ export function PostCreate() {
       title: formData.get("title") as string,
       author: formData.get("author") as string,
       tags: formData.get("tags") as string,
-      coverImage: coverImageUrl,
+      coverImage: coverImageUrl as string,
       content: editorContentRef.current,
-      notes: formData.get("notes") as string,
+      note: formData.get("note") as string,
       status: "Rascunho",
-      dateCreate: "2024-02-17",
+      dateCreate: "2024-02-20",
     }
 
     try {
@@ -65,9 +43,15 @@ export function PostCreate() {
           createPostObject: postData
         }
       })
+      toast(`Postagem criada com sucesso`, {
+        description: `Postagem: ${postData.title}`,
+      });
       console.log(postData);
     } catch (error) {
       const errorMessage = (error as Error).message || "ocorreu um erro desconhecido"
+      toast(`Erro ao criar postagem`, {
+        description: `Erro: ${postData.title}`,
+      });
       console.log("Erro ao criar o post:", errorMessage, postData)
     }
   };
@@ -135,9 +119,9 @@ export function PostCreate() {
           <div>
             <Label>Notas</Label>
             <Input
-              type="notes"
-              id="notes"
-              name="notes"
+              type="text"
+              id="note"
+              name="note"
             />
           </div>
 

@@ -21,7 +21,6 @@ export function UserCreateModal() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     const formData = new FormData(e.currentTarget);
     const userData: User = {
       name: formData.get("name") as string,
