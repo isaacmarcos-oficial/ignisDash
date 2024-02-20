@@ -4,11 +4,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft } from "lucide-react";
 import { useRef, useState } from "react";
-import { FileInput } from "./fileInput";
 import { useMutation } from "@apollo/client";
 import { CREATE_POST } from "@/lib/queries/queriePost";
 import { Post } from "@/types/post";
 import { toast } from "sonner";
+import { FileInput } from "@/components/fileInput";
 
 export function PostCreate() {
   const [createPost] = useMutation(CREATE_POST);
