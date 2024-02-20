@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Search, PlusCircle, X } from "lucide-react";
+import { Search, PlusCircle, X, Pencil } from "lucide-react";
 import { useMutation, useQuery } from "@apollo/client";
 import { DELETE_USER, GET_USER_BY_NAME } from "@/lib/queries/querieUser";
 import {
@@ -32,22 +32,23 @@ import {
 } from "@/components/ui/pagination";
 import React, { useState } from "react";
 import { toast } from "sonner";
-
-interface User {
-  id: string;
-  username: string;
-  name: string;
-  email: string;
-  accessLevel: string;
-}
+import { useNavigate } from 'react-router-dom';
+import { User } from "@/types/users";
 
 export function Users() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [_selectedUserId, setSelectedUserId] = useState<string | null>(null);
-
   const { data } = useQuery<{ usersByName: User[] }>(GET_USER_BY_NAME, {
     variables: { name: searchTerm },
   });
+
+  const navigate = useNavigate();
+
+  const handleEditUser = (userData: User) => {
+    navigate(`/users/${userData.id}`, { state: {user: userData} });
+  };
+
+  const [_selectedUserId, setSelectedUserId] = useState<string | null>(null);
+
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 5;
 
@@ -87,8 +88,7 @@ export function Users() {
         deleteUserId: id.toString(),
       },
     });
-    console.log(`Usuário excluído com sucesso`);
-    toast(`Usuário excluído com sucesso`);
+    toast.success(`Usuário excluído com sucesso`);
   };
 
   return (
@@ -131,8 +131,9 @@ export function Users() {
       <div className="border rounded">
         <Table>
           <TableHeader>
-            <TableHead>Nome</TableHead>
+            <TableHead></TableHead>
             <TableHead>Username</TableHead>
+            <TableHead>Nome</TableHead>
             <TableHead>E-mail</TableHead>
             <TableHead>Função</TableHead>
             <TableHead></TableHead>
@@ -140,53 +141,67 @@ export function Users() {
           <TableBody>
             {usersOnCurrentPage.map((data) => (
               <TableRow key={data.id}>
-                <TableCell width="15%">{data.username}</TableCell>
-                <TableCell width="30%">{data.name}</TableCell>
-                <TableCell width="30%">{data.email}</TableCell>
-                <TableCell width="15%">{data.accessLevel}</TableCell>
-                <TableCell width="10%">
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button
-                        className=""
-                        size="icon"
-                        variant="outline"
-                        onClick={() => {
-                          if (typeof data.id === "string") {
-                            handleDeleteConfirmation(data.id);
-                          } else {
-                            console.error("Client ID is undefined");
-                          }
-                        }}
-                      >
-                        <X className="w-4 h-4" />
+                <TableCell></TableCell>
+                <TableCell>
+                  <div className="flex flex-col gap-0.5">
+                    <span className="font-medium">{data.username}</span>
+                    <span className="text-xs text-zinc-500">{data.id}</span>
+                  </div>
+                </TableCell>
+                <TableCell className="font-medium">{data.name}</TableCell>
+                <TableCell>{data.email}</TableCell>
+                <TableCell>{data.accessLevel}</TableCell>
+                <TableCell>
+                  <div className=" flex gap-1">
+                    <a onClick={() => handleEditUser(data)}>
+                      <Button size="icon" variant="outline">
+                        <Pencil className="w-4 h-4" />
                       </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogTitle>Excluir usuário</DialogTitle>
-                      <DialogDescription>
-                        Tem certeza que deseja excluir {data.name}?
-                      </DialogDescription>
-                      <DialogFooter>
-                        <Button type="button" variant="outline">
-                          Cancelar
-                        </Button>
+                    </a>
+
+                    <Dialog>
+                      <DialogTrigger asChild>
                         <Button
-                          type="button"
-                          variant="destructive"
-                          onClick={async () => {
+                          className=""
+                          size="icon"
+                          variant="outline"
+                          onClick={() => {
                             if (typeof data.id === "string") {
-                              await handleDeleteUser(data.id);
+                              handleDeleteConfirmation(data.id);
                             } else {
                               console.error("Client ID is undefined");
                             }
                           }}
                         >
-                          Excluir definitivamente
+                          <X className="w-4 h-4" />
                         </Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogTitle>Excluir usuário</DialogTitle>
+                        <DialogDescription>
+                          Tem certeza que deseja excluir {data.name}?
+                        </DialogDescription>
+                        <DialogFooter>
+                          <Button type="button" variant="outline">
+                            Cancelar
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            onClick={async () => {
+                              if (typeof data.id === "string") {
+                                await handleDeleteUser(data.id);
+                              } else {
+                                console.error("Client ID is undefined");
+                              }
+                            }}
+                          >
+                            Excluir definitivamente
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}

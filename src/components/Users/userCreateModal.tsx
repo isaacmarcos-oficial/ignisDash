@@ -15,14 +15,37 @@ import { CREATE_USER } from "@/lib/queries/querieUser";
 import { User } from "@/types/users";
 import { DialogClose, DialogFooter } from "../ui/dialog";
 import { toast } from "sonner";
+import { z } from "zod";
+import { useState } from "react";
 
 export function UserCreateModal() {
   const [createUser] = useMutation(CREATE_USER);
+  const [username, setUsername] = useState('');
+
+  const userSchema = z.object({
+    name: z.string().min(1, "Nome é obrigatório"),
+    username: z.string().min(1, "Username é obrigatório"),
+    email: z.string().email("E-mail inválido"),
+    password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres"),
+    accessLevel: z.enum([
+      "Usuário",
+      "Editor",
+      "Vendedor",
+      "Financeiro",
+      "Administrador",
+    ]),
+  });
+
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value.replace(/\s/g, '');
+    setUsername(newValue);
+  };
+
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const userData: User = {
+    const userData: Omit<User, "id"> = {
       name: formData.get("name") as string,
       username: formData.get("username") as string,
       email: formData.get("email") as string,
@@ -31,20 +54,26 @@ export function UserCreateModal() {
     };
 
     try {
+      userSchema.parse(userData);
       await createUser({
         variables: {
           createUserObject: userData,
         },
       });
-      toast(`Cliente criado com sucesso`, {
-        description: `Cliente: ${userData.name}`,
+      toast.success(`Usuário criado com sucesso`, {
+        description: `Usuário: ${userData.name}`,
       });
     } catch (error) {
-      const errorMessage =
-        (error as Error).message || "Ocorreu um erro desconhecido";
-      toast(`Erro ao criar o cliente`, {
-        description: `Erro: ${errorMessage}`,
-      });
+      if (error instanceof z.ZodError) {
+        const errorMessages = error.errors.map(err => err.message).join(", ");
+        toast.error(`Erro: ${errorMessages}`);
+      } else {
+        const errorMessage =
+          (error as Error).message || "Ocorreu um erro desconhecido";
+        toast.error(`Erro ao criar o usuário`, {
+          description: `Erro: ${errorMessage}`,
+        });
+      }
     }
   };
 
@@ -54,7 +83,6 @@ export function UserCreateModal() {
         <div>
           <Label htmlFor="name">Nome</Label>
           <Input
-            required
             type="text"
             id="name"
             name="name"
@@ -64,17 +92,18 @@ export function UserCreateModal() {
         <div>
           <Label htmlFor="username">Username</Label>
           <Input
-            required
             type="text"
             id="username"
             name="username"
             placeholder="Nome de Usuário"
+            value={username}
+            onChange={handleUsernameChange}
           />
         </div>
         <div>
           <Label htmlFor="email">E-mail</Label>
           <Input
-            required
+            
             type="text"
             id="email"
             name="email"
@@ -84,7 +113,7 @@ export function UserCreateModal() {
         <div>
           <Label htmlFor="password">Senha</Label>
           <Input
-            required
+            
             type="password"
             id="password"
             name="password"
@@ -94,18 +123,18 @@ export function UserCreateModal() {
         </div>
         <div>
           <Label htmlFor="password">Função</Label>
-          <Select required name="accessLevel">
+          <Select  name="accessLevel">
             <SelectTrigger className="">
               <SelectValue placeholder="Select a função" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>Função</SelectLabel>
-                <SelectItem value="user">Usuário</SelectItem>
-                <SelectItem value="editor">Editor</SelectItem>
-                <SelectItem value="vendedor">Vendedor</SelectItem>
-                <SelectItem value="financeiro">Financeiro</SelectItem>
-                <SelectItem value="admintrador">Administrador</SelectItem>
+                <SelectItem value="Usuário">Usuário</SelectItem>
+                <SelectItem value="Editor">Editor</SelectItem>
+                <SelectItem value="Vendedor">Vendedor</SelectItem>
+                <SelectItem value="Financeiro">Financeiro</SelectItem>
+                <SelectItem value="Administrador">Administrador</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
