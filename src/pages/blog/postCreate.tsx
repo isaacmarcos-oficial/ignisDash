@@ -16,6 +16,9 @@ export function PostCreate() {
   const [coverImageUrl, setCoverImageUrl] = useState("");
   const editorContentRef = useRef("");
 
+  const currentDate = new Date()
+  const formattedDate = currentDate.toISOString().split('T')[0];
+
   const postSchema = z.object({
     title: z.string().min(1, "O título é obrigatório."),
     author: z.string().min(1, "O autor é obrigatório."),
@@ -36,7 +39,7 @@ export function PostCreate() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const postData: Post = {
+    const postData: Omit< Post, "id"> = {
       title: formData.get("title") as string,
       author: formData.get("author") as string,
       tags: formData.get("tags") as string,
@@ -44,7 +47,7 @@ export function PostCreate() {
       content: editorContentRef.current,
       note: formData.get("note") as string,
       status: "Rascunho",
-      dateCreate: "2024-02-20",
+      dateCreate: formattedDate,
     };
 
     try {

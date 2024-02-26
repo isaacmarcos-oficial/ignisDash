@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RxImage } from "react-icons/rx";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -8,8 +8,8 @@ interface FileInputProps {
   onChange: (file: File | null, url?: string) => void;
 }
 
-export function FileInput({ onChange }: FileInputProps) {
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+export function FileInput({ onChange, initialImageUrl }: FileInputProps & {initialImageUrl?: string }) {
+  const [previewUrl, setPreviewUrl] = useState<string | null>(initialImageUrl ?? null);
   const [_file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [isUploading, setIsUploading] = useState<boolean>(false);
@@ -25,6 +25,12 @@ export function FileInput({ onChange }: FileInputProps) {
       setIsUploading(false)
     }
   };
+
+  useEffect(() => {
+    if (initialImageUrl) {
+      setPreviewUrl(initialImageUrl);
+    }
+  }, [initialImageUrl])
 
   const cropImage = (file: File) => {
     return new Promise<File>((resolve, reject) => {
@@ -121,24 +127,23 @@ export function FileInput({ onChange }: FileInputProps) {
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
-      <div className="text-center ">
+      <div className="flex flex-col justify-center text-center ">
         {isUploading ? (
           <div className="flex mx-auto w-full text-center">
             <RotateCw className="h-4 w-4 mx-auto animate-spin text-center" />
           </div>
         ) : previewUrl ? (
-          <img src={previewUrl} alt="Preview" className="mx-auto h-32 w-32 object-contain" />
+          <img src={previewUrl} alt="Preview" className="mx-auto h-32 w-full object-cover" />
         ) : (
           <RxImage className="mx-auto h-12 w-12 text-gray-300" />
         )}
-        <div className="mt-4 flex text-sm leading-6 text-gray-600  ">
+        <div className="mt-4 flex justify-center text-sm leading-6 text-gray-600  ">
           <Label
             htmlFor="file-upload"
-            className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500 "
+            className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
           >
             <span>Clique aqui</span>
             <Input
-              required
               id="file-upload"
               name="file-upload"
               type="file"
@@ -148,38 +153,8 @@ export function FileInput({ onChange }: FileInputProps) {
           </Label>
           <p className="pl-1 mt-[-5px]">ou arraste e solte a imagem</p>
         </div>
-        <p className="text-xs leading-5 text-gray-600">PNG, JPG, GIF até 10MB</p>
+        <p className="text-xs text-center leading-5 text-gray-600">PNG, JPG, GIF até 10MB</p>
       </div>
     </div>
   );
 }
-
-
-
-  /* <div>
-        {previewUrl ? (
-          <img
-            src={previewUrl}
-            alt="Preview"
-            className="mx-auto h-32 w-32 object-contain"
-          />
-        ) : (
-          <div className="text-center">
-            <RxImage className="mx-auto h-12 w-12 text-gray-300" />
-            <input
-              type="file"
-              id="file-upload"
-              name="file-upload"
-              className="hidden"
-              onChange={handleImageChange}
-              accept="image/png, image/jpeg"
-            />
-            <Label htmlFor="file-upload" className="cursor-pointer">
-              Clique aqui ou arraste e solte a imagem
-            </Label>
-            <p className="text-xs leading-5 text-gray-600">
-              PNG, JPG, GIF até 10MB
-            </p>
-          </div>
-        )}
-      </div> */

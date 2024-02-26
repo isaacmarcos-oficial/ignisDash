@@ -12,9 +12,9 @@ export const GET_COURSES = gql`
   }
 `;
 
-export const CREATE_POST = gql`
-  mutation CreatePost($createPostObject: CreatePostInput!) {
-    createPost(createPostObject: $createPostObject) {
+export const CREATE_COURSE = gql`
+  mutation CreateCourse($createCourseObject: CreateCourseInput!) {
+    createCourse(createCourseObject: $createCourseObject) {
       id
       title
       slug
@@ -24,9 +24,9 @@ export const CREATE_POST = gql`
   }
 `;
 
-export const EDIT_POST = gql`
-  mutation EditPost($editPostObject: EditPostInput!) {
-    editPost(editPostObject: $editPostObject) {
+export const EDIT_COURSE = gql`
+  mutation EditCourse($editCourseObject: EditCourseInput!) {
+    editCourse(editCourseObject: $editCourseObject) {
       id
       title
       author
@@ -39,8 +39,8 @@ export const EDIT_POST = gql`
   }
 `;
 
-export const DELETE_POST = gql`
-  mutation deletePost($deletePostId: String!) {
-    deletePost(id: $deletePostId)
+export const DELETE_Course = gql`
+  mutation deleteCourse($deleteCourseId: String!) {
+    deleteCourse(id: $deleteCourseId)
   }
 `;

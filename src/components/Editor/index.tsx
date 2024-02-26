@@ -5,10 +5,8 @@ import {
   FloatingMenu,
 } from "@tiptap/react";
 import {
-  RxChevronDown,
   RxFontBold,
   RxFontItalic,
-  RxImage,
   RxLink1,
   RxLinkBreak1,
   RxStrikethrough,
@@ -21,8 +19,8 @@ import { useEffect, useState } from "react";
 
 type ContentChangeHandler = (content: string) => void;
 
-
-export function Editor({ onContentChange }: {onContentChange: ContentChangeHandler}) {
+export function Editor({ onContentChange, initialContent = "" }: {onContentChange: ContentChangeHandler, initialContent?: string})
+{
   const [_linkURL, setLinkURL] = useState("");
   const editor = useEditor({
     extensions: [
@@ -35,7 +33,7 @@ export function Editor({ onContentChange }: {onContentChange: ContentChangeHandl
     onUpdate(editor) {
       editor.editor.getHTML
     },
-    content: "",
+    content: initialContent,
     editorProps: {
       attributes: {
         class: "outline-none",
@@ -45,6 +43,8 @@ export function Editor({ onContentChange }: {onContentChange: ContentChangeHandl
 
   useEffect(() => {
     if (!editor) return;
+
+    editor.commands.setContent(initialContent)
 
     const updateContent = () => {
       const content = editor.getHTML();
@@ -56,7 +56,7 @@ export function Editor({ onContentChange }: {onContentChange: ContentChangeHandl
     return () => {
       editor.off("update", updateContent);
     };
-  }, [editor, onContentChange]);
+  }, [initialContent, editor]);
 
   useEffect(() => {
     if (!editor) return;
@@ -75,8 +75,6 @@ export function Editor({ onContentChange }: {onContentChange: ContentChangeHandl
       editor.off("selectionUpdate", updateLinkURL);
     };
   }, [editor]);
-
-  // console.log(editor?.getHTML())
 
   return (
     <div>
@@ -156,43 +154,28 @@ export function Editor({ onContentChange }: {onContentChange: ContentChangeHandl
           className="bg-zinc-100 shadow-xl border border-zinc-50 rounded-lg overflow-hidden flex divide-x divide-zinc-200"
           editor={editor}
         >
-          <BubbleButton
-            onClick={() => editor.chain().focus().toggleBold().run()}
-            data-active={editor.isActive("bold")}
-          >
-            Text
-            <RxChevronDown className="w-4 h-4" />
-          </BubbleButton>
+          
           <div className="flex items-center">
             <BubbleButton
+              type="button"
               onClick={() => editor.chain().focus().toggleBold().run()}
               data-active={editor.isActive("bold")}
             >
               <RxFontBold className="w-4 h-4" />
             </BubbleButton>
             <BubbleButton
+              type="button"
               onClick={() => editor.chain().focus().toggleItalic().run()}
               data-active={editor.isActive("italic")}
             >
               <RxFontItalic className="w-4 h-4" />
             </BubbleButton>
             <BubbleButton
+              type="button"
               onClick={() => editor.chain().focus().toggleStrike().run()}
               data-active={editor.isActive("strike")}
             >
               <RxStrikethrough className="w-4 h-4" />
-            </BubbleButton>
-
-            <BubbleButton
-              onClick={() => {
-                const url = prompt("Insira o URL da imagem:");
-                if (url) {
-                  editor.chain().focus().setImage({ src: url }).run();
-                }
-              }}
-              data-active={editor.isActive("strike")}
-            >
-              <RxImage className="w-4 h-4" />
             </BubbleButton>
 
             <div className="flex">
@@ -226,6 +209,7 @@ export function Editor({ onContentChange }: {onContentChange: ContentChangeHandl
               {/* Botão para Inserir Link, mostrado quando nenhum link está ativo */}
               {!editor.isActive("link") && (
                 <BubbleButton
+                  type="button"
                   onClick={() => {
                     const url = prompt("Insira o URL do Link:");
                     if (url) {

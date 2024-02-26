@@ -4,7 +4,7 @@ import { Blog } from "./pages/blog";
 import { PostCreate } from "./pages/blog/postCreate";
 import { Users } from "./pages/users";
 import { Courses } from "./pages/courses";
-import { Post } from "./pages/blog/[slug]";
+import { PostEdit } from "./pages/blog/[slug]";
 import { UserInfo } from "./pages/users/[slug]";
 
 export function AppRoutes() {
@@ -14,7 +14,7 @@ export function AppRoutes() {
         <Route path="/" element={<Home/>} />
 
         <Route path="/blog" element={<Blog/>} />
-        <Route path="/blog/:slug" element={<Post/>} />
+        <Route path="/blog/:slug" element={<PostEdit/>} />
         <Route path="/blog/create" element={<PostCreate/>} />
 
         <Route path="/users" element={<Users/>} />

@@ -50,8 +50,8 @@ export function Blog() {
 
   const navigate = useNavigate();
 
-  const handleEditPost = (data: Post) => {
-    navigate(`/blog/${data.id}`, { state: {post: data} });
+  const handleEditPost = (postData: Post) => {
+    navigate(`/blog/${postData.id}`, { state: {post: postData} });
   };
 
   const [deletePost] = useMutation<
