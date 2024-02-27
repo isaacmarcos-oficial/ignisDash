@@ -25,11 +25,8 @@ export function Sidebar() {
   ];
 
   return (
-    <div className="flex flex-1 m-8 max-w-3 gap-6	">
+    <div className="flex flex-1 m-8 sm:m-4 xs:m-6 max-w-3 gap-6">
       <div className="">
-        {/* <p className="text-sm text-zinc-600 text-center">
-          MENU
-        </p> */}
         {menuItems.map((menuItem, index) => (
           <MenuList
             key={index}

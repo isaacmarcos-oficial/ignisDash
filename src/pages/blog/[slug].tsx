@@ -113,7 +113,7 @@ export function PostEdit() {
   };
 
   return (
-    <div className="p-6 w-full lg:max-w-4xl md:max-w-2xl mx-auto space-y-4">
+    <div className="p-6 w-full lg:max-w-4xl sm:max-w-[80%] mx-auto space-y-4">
       <div className="flex w-full items-center justify-between">
         <div className="flex w-full items-center gap-3">
           <a href="/blog">
@@ -121,15 +121,10 @@ export function PostEdit() {
               <ArrowLeft className="w-4 h-4" />
             </Button>
           </a>
-          <h1 className="text-3xl font-bold ">Editar Post</h1>
-          <span className="text-xs text-zinc-500">{post.id}</span>
-        </div>
-        <div>
-          {values.status === "Publicado" ? (
-            <Button>Despublicar</Button>
-          ) : (
-            <Button>Publicar</Button>
-          )}
+          <div>
+            <h1 className="text-3xl font-bold ">Editar Post</h1>
+            <span className="text-xs text-zinc-500">{post.id}</span>
+          </div>
         </div>
       </div>
 
@@ -174,14 +169,14 @@ export function PostEdit() {
           {/* Imagem de Capa */}
           <div>
             <Label>Imagem de Capa</Label>
-              {/* <Input
+            {/* <Input
                 type="text"
                 id="coverImage"
                 name="coverImage"
                 onChange={handleInputChange}
                 value={values.coverImage}
               /> */}
-              {/* <FileInput onChange={handleImageChange}
+            {/* <FileInput onChange={handleImageChange}
               initialImageUrl={values.coverImage} /> */}
             <ImageUploader
               onChange={handleImageChange}
@@ -212,7 +207,16 @@ export function PostEdit() {
             />
           </div>
 
-          <Button type="submit">Salvar</Button>
+          <div className="flex justify-end gap-2">
+            <div className="">
+              {values.status === "Publicado" ? (
+                <Button variant="destructive" >Despublicar</Button>
+              ) : (
+                <Button>Publicar</Button>
+              )}
+            </div>
+            <Button type="submit">Salvar</Button>
+          </div>
         </div>
       </form>
     </div>

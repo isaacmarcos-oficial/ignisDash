@@ -109,15 +109,17 @@ export function UserInfo() {
   };
 
   return (
-    <div className="p-6 w-full max-w-4xl mx-auto space-y-4 ">
+    <div className="p-6 w-full sm:max-w-[80%] max-w-4xl mx-auto space-y-4 ">
       <div className="flex w-full gap-3 items-center">
         <a href="/users">
           <Button variant="outline" size="icon">
             <ArrowLeft className="w-4 h-4" />
           </Button>
         </a>
-        <h1 className="text-3xl font-bold ">Editar Usuário</h1>
-        <span className="text-xs text-zinc-500">{user.id}</span>
+        <div>
+          <h1 className="text-3xl font-bold ">Editar Usuário</h1>
+          <span className="text-xs text-zinc-500">{user.id}</span>
+        </div>
       </div>
 
       <div>
