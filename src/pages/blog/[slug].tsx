@@ -6,11 +6,11 @@ import { ArrowLeft } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Post } from "@/types/post";
 import { toast } from "sonner";
-import { FileInput } from "@/components/fileInput";
 import { z } from "zod";
 import { useLocation } from "react-router-dom";
 import { EDIT_POST } from "@/lib/queries/queriePost";
 import { useMutation } from "@apollo/client";
+import { ImageUploader } from "@/components/fileInput/imageUploader";
 
 export function PostEdit() {
   const location = useLocation();
@@ -21,12 +21,11 @@ export function PostEdit() {
     author: z.string().min(1, "O autor é obrigatório."),
     tags: z.string(),
     coverImage: z.string(),
-    content: z.string().min(1, "O conteúdo é obrigatório."),
+    content: z.string().min(1, "O autor é obrigatório."),
     note: z.string().optional(),
   });
 
   const [editPost] = useMutation(EDIT_POST);
-
 
   const [values, setValues] = useState({
     id: post.id,
@@ -37,7 +36,7 @@ export function PostEdit() {
     content: post.content,
     note: post.note,
     status: post.status,
-    dateCreate: post.dateCreate
+    dateCreate: post.dateCreate,
   });
 
   useEffect(() => {
@@ -47,13 +46,15 @@ export function PostEdit() {
   }, [post]);
 
   const [coverImageUrl, setCoverImageUrl] = useState(values.coverImage);
-  const editorContentRef = useRef("");
-
   const handleImageChange = (_file: File | null, url?: string) => {
-    setValues(prevValues => ({ ...prevValues, coverImage: url || prevValues.coverImage }));
+    setValues((prevValues) => ({
+      ...prevValues,
+      coverImage: url || prevValues.coverImage,
+    }));
     setCoverImageUrl(url || values.coverImage);
   };
 
+  const editorContentRef = useRef(values.content);
   const handleContentChange = (initialContent: string) => {
     editorContentRef.current = initialContent;
   };
@@ -71,16 +72,15 @@ export function PostEdit() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const postData: Post = {
+    const postData: Omit<Post, "dateCreate"> = {
       id: values.id,
       title: formData.get("title") as string,
       author: formData.get("author") as string,
       tags: formData.get("tags") as string,
-      coverImage: coverImageUrl,
+      coverImage: coverImageUrl as string,
       content: editorContentRef.current,
       note: formData.get("note") as string,
       status: "Rascunho",
-      dateCreate: values.dateCreate,
     };
 
     try {
@@ -89,26 +89,25 @@ export function PostEdit() {
       await editPost({
         variables: {
           editPostObject: {
-            ...postData
-          }
-        }
-      }); 
+            ...postData,
+          },
+        },
+      });
       toast.success(`Postagem editada com sucesso`, {
         description: `Postagem: ${postData.title}`,
       });
-      console.log(postData);
     } catch (error) {
       if (error instanceof z.ZodError) {
         error.errors.forEach((err) => {
           toast(err.message);
         });
       } else {
+        console.log(postData);
         const errorMessage =
           (error as Error).message || "ocorreu um erro desconhecido";
         toast.error(`Erro ao editar postagem`, {
           description: `Erro: ${errorMessage}`,
         });
-        console.log("Erro ao editar o post:", errorMessage, postData);
       }
     }
   };
@@ -126,8 +125,11 @@ export function PostEdit() {
           <span className="text-xs text-zinc-500">{post.id}</span>
         </div>
         <div>
-          {values.status === "Publicado" ?(
-          <Button >Despublicar</Button>) : (<Button>Publicar</Button>)}
+          {values.status === "Publicado" ? (
+            <Button>Despublicar</Button>
+          ) : (
+            <Button>Publicar</Button>
+          )}
         </div>
       </div>
 
@@ -172,7 +174,19 @@ export function PostEdit() {
           {/* Imagem de Capa */}
           <div>
             <Label>Imagem de Capa</Label>
-            <FileInput onChange={handleImageChange} initialImageUrl={values.coverImage }/>
+              {/* <Input
+                type="text"
+                id="coverImage"
+                name="coverImage"
+                onChange={handleInputChange}
+                value={values.coverImage}
+              /> */}
+              {/* <FileInput onChange={handleImageChange}
+              initialImageUrl={values.coverImage} /> */}
+            <ImageUploader
+              onChange={handleImageChange}
+              initialImageUrl={values.coverImage}
+            />
           </div>
 
           {/* Conteúdo da postagem */}

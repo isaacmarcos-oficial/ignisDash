@@ -8,8 +8,8 @@ import { useMutation } from "@apollo/client";
 import { CREATE_POST } from "@/lib/queries/queriePost";
 import { Post } from "@/types/post";
 import { toast } from "sonner";
-import { FileInput } from "@/components/fileInput";
 import { z } from "zod";
+import { ImageUploader } from "@/components/fileInput/imageUploader";
 
 export function PostCreate() {
   const [createPost] = useMutation(CREATE_POST);
@@ -28,7 +28,7 @@ export function PostCreate() {
     note: z.string().optional(),
   });
 
-  const handleImageChange = (_file: File | null, url?: string) => {
+  const handleImageChange = (_image: File | null, url?: string) => {
     setCoverImageUrl(url || "");
   };
 
@@ -111,7 +111,12 @@ export function PostCreate() {
 
           {/* Imagem de Capa */}
           <div>
-            <FileInput onChange={handleImageChange} />
+            {/* <FileInput onChange={handleImageChange} /> */}
+          </div>
+
+          <div>
+            <Label>Imagem de Capa</Label>
+            <ImageUploader onChange={handleImageChange} />
           </div>
 
           {/* Conteúdo da postagem */}

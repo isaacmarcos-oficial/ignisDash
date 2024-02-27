@@ -69,8 +69,7 @@ export function Blog() {
         deletePostId: id.toString(),
       },
     });
-    console.log(`Usuário excluído com sucesso`);
-    toast(`Usuário excluído com sucesso`);
+    toast(`Postagem excluída com sucesso`);
   };
   return (
     <div className="p-6 w-full max-w-4xl mx-auto space-y-4">
